@@ -1,33 +1,67 @@
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
+import java.util.Random;
 
+import org.apache.commons.io.FileUtils;
 
 public class getRandomImage {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		try{
-			URL url = new URL("//http://en.wikipedia.org/w/api.json?action=query&titles=Al-Farabi&prop=pageimages&format=json&pithumbsize=100");
-			//http://en.wikipedia.org/w/api.json?action=query&titles=Al-Farabi&prop=pageimages&format=json&pithumbsize=100
-		URLConnection connection = url.openConnection();
 		
-		String line; 
-		StringBuilder builder = new StringBuilder();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-		while((line = reader.readLine()) != null){
-			builder.append(line);
-		}
-		
-		JSONObject json = new JSONObject(builder.toString());j
-		}
+	getImageURL();
+	
 	}
+
+	//get a random image from imgur
+	
+public static void getImageURL(){
+	//code block to generate random seven character sequence to append to the end of the imgur link
+	URL imgURL = null;
+	try {
+	/*
+		 * The imgur ending is composed of seven characters, upper and lower case as well as 0-9
+		 */
+		char[] choice = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+		String append = "";
+		Random rand = new Random();
 		
-	//get a random image from wikipedia
+		for(int i=0;i<7;i++){	
+			int n = rand.nextInt(61);
+			append = append + choice[n];
+		}
+		
+		System.out.println(append);
+		//test if the url generated is valid
+		
+	    imgURL = new URL("https://i.imgur.com/" + append + ".jpg");
+	    
+File wallpaper = new File("wallpaper.jpg");
+		
+		try{
+		FileUtils.copyURLToFile(imgURL, wallpaper);
+		
+		while(wallpaper.length() == 503){
+			getImageURL();
+		}
+		FileUtils.copyURLToFile(imgURL, wallpaper);
+		}
+	 catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		} 
+	catch (MalformedURLException e) {
+			
+			e.printStackTrace();
+		}
 	
-	
+		
+}
+
+}
 	//set random image as wallpaper
 	
 	
-}
+
